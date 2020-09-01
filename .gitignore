@@ -1,0 +1,12 @@
+/archives
+/env
+/log
+
+/data/*
+!/data/readme.md
+
+/models/*
+!/models/readme.md
+
+/tmp
+__pycache__
