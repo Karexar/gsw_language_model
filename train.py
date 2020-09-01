@@ -472,7 +472,6 @@ def run(gpu_id, options, distributed=False):
     torch.manual_seed(options.seed)
     use_cuda = torch.cuda.is_available() and not options.no_cuda
     device = torch.device("cuda" if use_cuda else "cpu")
-    print("TEST")
     logger = lavd.Logger(options.name, disabled=gpu_id != 0)
     # Parser needs to be rebuilt, since it can't be serialised and it is needed to even
     # detect the number of GPUs, but here it's only used to log it.

@@ -1,19 +1,17 @@
 # Swiss-German language models
 
-This project uses a GPT-2 language model to model Swiss-German. There are two parts .
-- Create a Swiss-German language model using Twitter on top of Leipzig and SwissCrawl corpus
-- Create dialect-specific language models to outperform a generic language model if dialects are known.
+This project uses a GPT-2 language model to model Swiss-German. The implementation is slightly modified from [https://github.com/jungomi/swiss-language-model](https://github.com/jungomi/swiss-language-model)
 
 ## Generic Swiss-German language model
 
-For all the following commands, make sure you updated the settings in the scripts.
+This is for creating generic Swiss-German language models. In our case we use a Twitter dataset on top of Leipzig and SwissCrawl. For all the following commands, make sure you updated the settings in the scripts.
 
 First you will need to predict the probabilities of each sentence to be Swiss-German, in order to filter out the sentences with too low prediction.
 
 ```zsh
 python -m preprocessing.predict_gsw
 ```
-Then you need to prepare the dataset by filtering out low predictions, splitting into train, valid and test set, and in our case, merging SwissCrawl/Leipzig and SwissCrawl/Leipzig/Twitter. 
+Then you need to prepare the dataset by filtering out low predictions, splitting into train, valid and test set, and in our case, merging SwissCrawl/Leipzig and SwissCrawl/Leipzig/Twitter.
 
 ```zsh
 python -m preprocessing.generic.clean_data
@@ -47,4 +45,26 @@ Note that you will certainly stop before 20 epochs. Refer to [https://github.com
 
 ## Dialect-specific language models
 
-First prepare the data
+This is for creating dialect specific language models. For all the following commands, make sure you updated the settings in the scripts.
+
+The first script takes a dataset containing a 'sentence', 'dialect', and 'predicted_dialect' column. It splits the dataset into train, valid, and test set for all dialect. The second script convert into tsv file format.
+
+```zsh
+python -m preprocessing.dialect_lm.split_dataset
+python -m preprocessing.convert_tsv
+```
+
+Then train from scratch the GSW model, e.g.
+
+```zsh
+python -m prepare_vocab -i data/twitter/all/train.tsv -o data/twitter/all/vocab
+python train.py --train-text data/twitter/all/train.tsv \
+                --validation-text data/twitter/all/valid.tsv \
+                --name twitter_specific \
+                --model "gpt2-scratch" \
+                --fp16 \
+                --num-epochs 100 \
+                --vocab data/twitter/all/vocab \
+```
+
+And fine_tune on each dialect. 
