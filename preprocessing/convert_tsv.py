@@ -3,9 +3,23 @@ from preprocessing.cleaner import *
 from tqdm import tqdm
 import os
 
-input_paths=["data/dialect_specific/predicted_labels/all/train.csv",
-             "data/dialect_specific/predicted_labels/all/valid.csv",
-             "data/dialect_specific/predicted_labels/all/test.csv"]
+input_paths = []
+for dialect in ["ZH", "BE", "CE", "NW", "EA", "GR", "VS"]:
+    path = os.path.join("data/whatsapp/predicted_dialect", dialect)
+    path = os.path.join(path, "test.csv")
+    input_paths.append(path)
+
+# for name in ["known_labels", "predicted_labels"]:
+#     dir_labels = os.path.join("data/dialect_specific", name)
+#     for dialect in ["ZH", "BE", "CE", "NW", "EA", "GR", "VS", "all"]:
+#         dir_dialect = os.path.join(dir_labels, dialect)
+#         for set_name in ["train.csv", "valid.csv", "test.csv"]:
+#             path = os.path.join(dir_dialect, set_name)
+#             input_paths.append(path)
+
+# input_paths=["data/dialect_specific/known_labels/BE/train.csv",
+#              "data/dialect_specific/known_labels/BE/valid.csv",
+#              "data/dialect_specific/known_labels/BE/test.csv"]
 # input_paths = ["data/swisstext_leipzig/test.csv",
 #                "data/swisstext_leipzig/valid.csv",
 #                "data/swisstext_leipzig/train.csv",

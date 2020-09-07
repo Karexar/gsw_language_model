@@ -60,11 +60,28 @@ Then train from scratch the GSW model, e.g.
 python -m prepare_vocab -i data/twitter/all/train.tsv -o data/twitter/all/vocab
 python train.py --train-text data/twitter/all/train.tsv \
                 --validation-text data/twitter/all/valid.tsv \
-                --name twitter_specific \
+                --name twitter_all \
                 --model "gpt2-scratch" \
                 --fp16 \
                 --num-epochs 100 \
                 --vocab data/twitter/all/vocab \
 ```
 
-And fine_tune on each dialect. 
+And fine_tune on each dialect. For example here, we take the twitter_all model at epoch 12 and finetune it on BE.
+
+```zsh
+python train.py --train-text data/twitter/BE/train.tsv \
+                --validation-text data/twitter/BE/valid.tsv \
+                --name all_BE \
+                --model gpt2 \
+                --fp16 \
+                --num-epochs 1 \
+                --pre-trained log/twitter_all/0012
+```
+
+Finally evaluate using e.g. 
+
+```zsh
+python evaluate.py --dataset data\sl\test_20k.tsv --checkpoint log/sl_generic/0010
+
+```
